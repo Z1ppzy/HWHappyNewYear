@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Nullable;
 import ru.meloncode.xmas.utils.LocationUtils;
 import ru.meloncode.xmas.utils.TextUtils;
@@ -28,14 +29,18 @@ class XMas {
 
     public static void createMagicTree(Player player, Location loc) {
         MagicTree tree = new MagicTree(player.getUniqueId(), TreeLevel.SAPLING, loc);
-        trees.put(tree.getTreeUID(), tree);
-        trees_byChunk.computeIfAbsent(LocationUtils.getChunkKey(tree.getLocation()), aLong -> new ArrayList<>()).add(tree);
+        registerTree(tree);
+        if (Main.inProgress) {
+            tree.build();
+        }
         tree.save();
     }
 
     public static void addMagicTree(MagicTree tree) {
-        trees.put(tree.getTreeUID(), tree);
-        tree.build();
+        registerTree(tree);
+        if (Main.inProgress) {
+            tree.build();
+        }
     }
 
     public static Collection<MagicTree> getAllTrees() {
@@ -48,32 +53,43 @@ class XMas {
     }
 
     public static void removeTree(MagicTree tree) {
-        tree.unbuild();
-        TreeSerializer.removeTree(tree);
-        trees.remove(tree.getTreeUID());
-        trees_byChunk.remove(LocationUtils.getChunkKey(tree.getLocation()));
+        removeTree(tree, true);
     }
 
     public static void processPresent(Block block, Player player) {
         if (block.getType() == Material.PLAYER_HEAD) {
             Skull skull = (Skull) block.getState();
 
-                if (Main.getHeads().contains(skull.getOwner())) {
-                    Location loc = block.getLocation();
-                    World world = loc.getWorld();
-                    if (world != null) {
-                        if (RANDOM.nextFloat() < Main.LUCK_CHANCE || !Main.LUCK_CHANCE_ENABLED) {
-                            world.dropItemNaturally(loc, new ItemStack(Main.gifts.get(RANDOM.nextInt(Main.gifts.size()))));
-                            Effects.TREE_SWAG.playEffect(loc);
+            String ownerName = skull.getPersistentDataContainer().get(Main.PRESENT_KEY, PersistentDataType.STRING);
+            if (ownerName == null && skull.getOwningPlayer() != null) {
+                ownerName = skull.getOwningPlayer().getName();
+            }
+
+            if (ownerName != null && Main.getHeads().contains(ownerName)) {
+                Location loc = block.getLocation();
+                World world = loc.getWorld();
+
+                if (world != null) {
+                    boolean success = Main.PRESENT_GIFT_CHANCE >= 100 || RANDOM.nextInt(100) < Main.PRESENT_GIFT_CHANCE;
+                    if (success) {
+                        ItemStack gift = Main.gifts.get(RANDOM.nextInt(Main.gifts.size())).clone();
+                        world.dropItemNaturally(loc, gift);
+                        Effects.TREE_SWAG.playEffect(loc);
+                        if (LocaleManager.GIFT_LUCK != null) {
                             TextUtils.sendMessage(player, LocaleManager.GIFT_LUCK);
-                        } else {
-                            Effects.SMOKE.playEffect(loc);
-                            world.dropItemNaturally(loc, new ItemStack(Material.COAL));
+                        }
+                    } else {
+                        ItemStack failDrop = Main.getPresentFailDrop();
+                        Effects.SMOKE.playEffect(loc);
+                        world.dropItemNaturally(loc, failDrop);
+                        if (LocaleManager.GIFT_FAIL != null) {
                             TextUtils.sendMessage(player, LocaleManager.GIFT_FAIL);
                         }
                     }
-                    block.setType(Material.AIR);
                 }
+
+                block.setType(Material.AIR);
+            }
         }
     }
 
@@ -88,4 +104,32 @@ class XMas {
     public static MagicTree getTree(UUID treeUID) {
         return trees.get(treeUID);
     }
+
+    private static void registerTree(MagicTree tree) {
+        trees.put(tree.getTreeUID(), tree);
+        long chunkKey = LocationUtils.getChunkKey(tree.getLocation());
+        trees_byChunk.computeIfAbsent(chunkKey, key -> new ArrayList<>()).add(tree);
+    }
+
+    public static void removeTree(MagicTree tree, boolean unbuild) {
+        if (tree == null) {
+            return;
+        }
+        if (unbuild) {
+            tree.unbuild();
+        }
+        TreeSerializer.removeTree(tree);
+        trees.remove(tree.getTreeUID());
+        long chunkKey = LocationUtils.getChunkKey(tree.getLocation());
+        List<MagicTree> chunkTrees = trees_byChunk.get(chunkKey);
+        if (chunkTrees != null) {
+            chunkTrees.remove(tree);
+            if (chunkTrees.isEmpty()) {
+                trees_byChunk.remove(chunkKey);
+            }
+        }
+    }
 }
+
+
+

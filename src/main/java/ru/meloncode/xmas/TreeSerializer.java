@@ -68,21 +68,26 @@ class TreeSerializer {
     public static void saveTree(MagicTree tree) {
         String cKey = tree.getTreeUID().toString();
         String owner = tree.getOwner().toString();
+
         trees.set("trees." + cKey + ".owner", owner);
         trees.set("trees." + cKey + ".level", tree.getLevel().getLevelName());
         trees.set("trees." + cKey + ".loc.world", tree.getLocation().getWorld().getName());
         trees.set("trees." + cKey + ".loc.x", tree.getLocation().getX());
         trees.set("trees." + cKey + ".loc.y", tree.getLocation().getY());
         trees.set("trees." + cKey + ".loc.z", tree.getLocation().getZ());
-        if (tree.getLevelupRequirements() != null && tree.getLevelupRequirements().size() > 0)
+        trees.set("trees." + cKey + ".present_counter", tree.getPresentCounter());
+        trees.set("trees." + cKey + ".scheduled_presents", tree.getScheduledPresents());
+
+        if (tree.getLevelupRequirements() != null && tree.getLevelupRequirements().size() > 0) {
             trees.createSection("trees." + cKey + ".levelup", tree.getLevelupRequirements());
+        }
+
+        // ИСПРАВЛЕНО: Сохраняем ОДИН раз в конце!
         try {
             trees.save(treesFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        trees.set("trees." + cKey + ".present_counter", tree.getPresentCounter());
-        trees.set("trees." + cKey + ".scheduled_presents", tree.getScheduledPresents());
     }
 
     public static void removeTree(MagicTree tree) {
@@ -106,7 +111,6 @@ class TreeSerializer {
                     levelupRequirements.put(cMaterial, value);
                 } catch (IllegalArgumentException e) {
                     TextUtils.sendConsoleMessage("Can't find material '" + sMaterial + "' for tree level.");
-                    return null;
                 }
             }
         return levelupRequirements;

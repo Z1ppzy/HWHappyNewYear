@@ -1,7 +1,6 @@
 package ru.meloncode.xmas.utils;
 
-import org.apache.commons.lang.NullArgumentException;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,7 +15,7 @@ public class TextUtils {
 
     public static List<String> generateChatReqList(MagicTree tree) {
         if (tree == null)
-            throw new NullArgumentException("tree");
+            throw new IllegalArgumentException("tree cannot be null");
         List<String> list = new ArrayList<>();
         list.add(ChatColor.GOLD + LocaleManager.GROW_REQ_LIST_TITLE + ":");
         if (tree.getLevel().getLevelupRequirements() != null && tree.getLevel().getLevelupRequirements().size() > 0)

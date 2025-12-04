@@ -1,47 +1,49 @@
-#_UNUSED is a keyword to disable message.
+﻿#_UNUSED is a keyword to disable message.
 
 #For chat
 plugin-name: X-Mas
 
 messages:
- plugin-enabled: Boldog karácsonyt és boldog új évet!
- timeout: Az ünnepek véget értek! Viszlát, jövőre!
- final-wish: Boldog új évet mindenkinek, barátaim!
+ plugin-enabled: Boldog karГЎcsonyt Г©s boldog Гєj Г©vet!
+ timeout: Az Гјnnepek vГ©get Г©rtek! ViszlГЎt, jГ¶vЕ‘re!
+ final-wish: Boldog Гєj Г©vet mindenkinek, barГЎtaim!
 
  tree:
-  grow-lvl-ready: Woosh! Nyomd meg a jobb egérgombot, hogy a fák növekedjenek!
+  grow-lvl-ready: Woosh! Nyomd meg a jobb egГ©rgombot, hogy a fГЎk nГ¶vekedjenek!
   grow-lvl-progress: _UNUSED
-  grow-req-list-title: Kötelező
-  grow-not-enough-place: Nincs elég hely ahhoz, hogy növekedjen
-  grow-lvl-max: Ez a fa elérte a maximális szintjét!
-  tree-limit: Hé, ne légy mohó! (Fa korlát)
-  destroy-sapling: Ez a csoda nem csökken. Biztos vagy ebben? 
-  destroy-leaves-santa: Mikulás lát mindent. 
-  destroy-leaves-tut: Egy fa megsemmisítéséhez - vágd ki a fát.
-  destroy-warning: Biztos vagy ebben? A fejlődésed elvész, és nincs erőforrás.
-  destroy-tut: A fát megsemmisíteni, vágd ki újra.
-  destroy-fail-owner: Ez nem a te fád!
-  destroy-complete: SZÖRNY vagy!
+  grow-req-list-title: KГ¶telezЕ‘
+  grow-not-enough-place: Nincs elГ©g hely ahhoz, hogy nГ¶vekedjen
+  grow-lvl-max: Ez a fa elГ©rte a maximГЎlis szintjГ©t!
+  tree-limit: HГ©, ne lГ©gy mohГі! (Fa korlГЎt)
+  destroy-sapling: Ez a csoda nem csГ¶kken. Biztos vagy ebben? 
+  destroy-leaves-santa: MikulГЎs lГЎt mindent. 
+  destroy-leaves-tut: Egy fa megsemmisГ­tГ©sГ©hez - vГЎgd ki a fГЎt.
+  destroy-warning: Biztos vagy ebben? A fejlЕ‘dГ©sed elvГ©sz, Г©s nincs erЕ‘forrГЎs.
+  destroy-tut: A fГЎt megsemmisГ­teni, vГЎgd ki Гєjra.
+  destroy-fail-owner: Ez nem a te fГЎd!
+  destroy-removed: You carried the Christmas tree out to the trash.
  gift:
   luck-message: _UNUSED
-  unluck-message: Valószínűleg a Mikulás a feketelistába tette. Remélem, szerencséje lesz legközelebb!
+  unluck-message: ValГіszГ­nЕ±leg a MikulГЎs a feketelistГЎba tette. RemГ©lem, szerencsГ©je lesz legkГ¶zelebb!
 crystal:
- name: Karácsonyi kristály
+ name: KarГЎcsonyi kristГЎly
  lore: 
-  - Koncentrált karácsonyi szellem
-  - Használd a fa fa-csemetékhez, hogy kitöltse mágiával!
+  - KoncentrГЎlt karГЎcsonyi szellem
+  - HasznГЎld a fa fa-csemetГ©khez, hogy kitГ¶ltse mГЎgiГЎval!
 help:
-  - 'Használd /xmas a plugin verziójának és állapotának megjelenítése'
-  - 'Használd /xmas give <név>, hogy valakinek kristályt adj'
-  - 'Használd /xmas ajándékok, hogy minden karácsonyi fa alá ajándékozzon néhány ajándékot!'
-  - 'Használd /xmas véget a bővítmény beillesztésének módjába'
+  - 'HasznГЎld /xmas a plugin verziГіjГЎnak Г©s ГЎllapotГЎnak megjelenГ­tГ©se'
+  - 'HasznГЎld /xmas give <nГ©v>, hogy valakinek kristГЎlyt adj'
+  - 'HasznГЎld /xmas ajГЎndГ©kok, hogy minden karГЎcsonyi fa alГЎ ajГЎndГ©kozzon nГ©hГЎny ajГЎndГ©kot!'
+  - 'HasznГЎld /xmas vГ©get a bЕ‘vГ­tmГ©ny beillesztГ©sГ©nek mГіdjГЎba'
 
 command:
  help:
-   - '&2Használd &c/xmas &2a plugin verziójának és állapotának megjelenítése'
-   - '&2Használd &c/xmas give &2<név>, hogy valakinek kristályt adj'
-   - '&2Használd &c/xmas gifts &2hogy fák alatt ajándékozzon néhány ajándékot!'
-   - '&2Használd &c/xmas end &2a bővítmény beillesztése véges módba'
- player-offline: '&cA játékos nem található'
- no-player-name: '&6Hiányzó játékos név'
-giveaway: '&cHo! &2Ho! &cHo! &3Úgy néz ki, itt az ideje, hogy ellenőrizze ajándékokat!'
+   - '&2HasznГЎld &c/xmas &2a plugin verziГіjГЎnak Г©s ГЎllapotГЎnak megjelenГ­tГ©se'
+   - '&2HasznГЎld &c/xmas give &2<nГ©v>, hogy valakinek kristГЎlyt adj'
+   - '&2HasznГЎld &c/xmas gifts &2hogy fГЎk alatt ajГЎndГ©kozzon nГ©hГЎny ajГЎndГ©kot!'
+   - '&2HasznГЎld &c/xmas end &2a bЕ‘vГ­tmГ©ny beillesztГ©se vГ©ges mГіdba'
+ player-offline: '&cA jГЎtГ©kos nem talГЎlhatГі'
+ no-player-name: '&6HiГЎnyzГі jГЎtГ©kos nГ©v'
+giveaway: '&cHo! &2Ho! &cHo! &3Гљgy nГ©z ki, itt az ideje, hogy ellenЕ‘rizze ajГЎndГ©kokat!'
+
+

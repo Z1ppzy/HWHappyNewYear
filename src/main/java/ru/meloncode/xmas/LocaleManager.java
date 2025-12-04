@@ -26,6 +26,7 @@ public class LocaleManager {
     public static String DESTROY_WARNING;
     public static String DESTROY_FAIL_OWNER;
     public static String DESTROY_TUT;
+    public static String TREE_REMOVED;
     public static String CRYSTAL_NAME;
     public static List<String> CRYSTAL_LORE;
     public static String GIFT_LUCK;
@@ -69,6 +70,7 @@ public class LocaleManager {
         DESTROY_WARNING = getString("messages.tree.destroy-warning");
         DESTROY_TUT = getString("messages.tree.destroy-tut");
         DESTROY_FAIL_OWNER = getString("messages.tree.destroy-fail-owner");
+        TREE_REMOVED = getString("messages.tree.destroy-removed");
         CRYSTAL_NAME = ChatColor.GREEN + getString("crystal.name");
         CRYSTAL_LORE = getStringList("crystal.lore");
         GIFT_LUCK = getString("messages.gift.luck-message");
@@ -88,12 +90,17 @@ public class LocaleManager {
             throw new NullPointerException("Locale not loaded");
 
         try {
-            String message = ChatColor.translateAlternateColorCodes('&', locale.getString(path));
+            String raw = locale.getString(path);
+            if (raw == null) {
+                return null;
+            }
+            String message = ChatColor.translateAlternateColorCodes('&', raw);
             return message.contains("_UNUSED") ? null : message;
         } catch (NullPointerException e) {
             TextUtils.sendConsoleMessage(ChatColor.DARK_RED + "Unable to find '" + path + "' in locale " + Main.getInstance().getConfig().getString("core.locale") + ". Bad File?");
             TextUtils.sendConsoleMessage(ChatColor.DARK_RED + "Using default locale to get value");
-            return def_locale.getString(path);
+            String fallback = def_locale.getString(path);
+            return fallback == null ? null : ChatColor.translateAlternateColorCodes('&', fallback);
         }
     }
 

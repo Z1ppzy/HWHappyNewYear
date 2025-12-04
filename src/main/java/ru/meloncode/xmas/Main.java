@@ -26,8 +26,7 @@ public class Main extends JavaPlugin implements Listener {
     // Yeah. That's as it should be.
     static final Random RANDOM = new Random(Calendar.getInstance().get(Calendar.YEAR));
     static List<ItemStack> gifts;
-    static float LUCK_CHANCE;
-    static boolean LUCK_CHANCE_ENABLED;
+    static int PRESENT_GIFT_CHANCE;
     static boolean resourceBack;
     static int MAX_TREE_COUNT;
     static boolean autoEnd;
@@ -36,6 +35,8 @@ public class Main extends JavaPlugin implements Listener {
     private static int UPDATE_SPEED;
     private static int PARTICLES_DELAY;
     private static List<String> heads;
+    public static NamespacedKey PRESENT_KEY;
+    private static ItemStack presentFailDrop;
     private static Plugin plugin;
     private FileConfiguration config;
     private String locale;
@@ -58,6 +59,7 @@ public class Main extends JavaPlugin implements Listener {
         this.saveDefaults();
         config = getConfig();
         locale = config.getString("core.locale");
+        PRESENT_KEY = new NamespacedKey(this, "xmas_present");
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy kk-mm-ss");
         inProgress = config.getBoolean("core.plugin-enabled", true);
@@ -120,8 +122,16 @@ public class Main extends JavaPlugin implements Listener {
             return;
         }
 
-        LUCK_CHANCE_ENABLED = config.getBoolean("xmas.luck.enabled");
-        LUCK_CHANCE = (float) config.getInt("xmas.luck.chance") / 100;
+        int legacyChance = config.getInt("xmas.luck.chance", 75);
+        boolean legacyLuckEnabled = config.getBoolean("xmas.luck.enabled", true);
+        ConfigurationSection dropSection = config.getConfigurationSection("xmas.present-drop");
+        int configuredChance = dropSection != null ? dropSection.getInt("gift-chance", legacyChance) : (legacyLuckEnabled ? legacyChance : 100);
+        PRESENT_GIFT_CHANCE = Math.max(0, Math.min(100, configuredChance));
+        String failMaterial = dropSection != null ? dropSection.getString("fail-item", "COAL") : "COAL";
+        int failAmount = dropSection != null ? dropSection.getInt("fail-amount", 1) : 1;
+        presentFailDrop = buildFailDrop(failMaterial, failAmount);
+
+        getServer().getPluginManager().registerEvents(this, this);
         new Events().registerListener();
         new MagicTask(this).runTaskTimer(this, 5, UPDATE_SPEED);
         new PlayParticlesTask(this).runTaskTimerAsynchronously(this, 5, PARTICLES_DELAY);
@@ -165,6 +175,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onDisable() {
         if (XMas.getAllTrees().size() > 0)
             for (MagicTree tree : XMas.getAllTrees()) {
+                tree.save();
                 tree.unbuild();
             }
     }
@@ -174,6 +185,19 @@ public class Main extends JavaPlugin implements Listener {
         inProgress = false;
         config.set("core.plugin-enabled", false);
         saveConfig();
+    }
+
+    public static ItemStack getPresentFailDrop() {
+        return presentFailDrop.clone();
+    }
+
+    private ItemStack buildFailDrop(String materialName, int amount) {
+        try {
+            return new ItemStack(Material.valueOf(materialName), Math.max(1, amount));
+        } catch (IllegalArgumentException e) {
+            getLogger().warning(ChatColor.RED + "[X-Mas] Unable to load fail item '" + materialName + "', fallback to COAL");
+            return new ItemStack(Material.COAL, Math.max(1, amount));
+        }
     }
 
     private void saveDefaults() {

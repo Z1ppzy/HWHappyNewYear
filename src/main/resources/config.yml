@@ -24,15 +24,22 @@ core:
 xmas:
  luck:
   enabled: false
-# Value 1-100
+# Value 1-100 (legacy option, overridden by present-drop if set)
   chance: 75
+
+ present-drop:
+  # Chance in percent to give a gift instead of the fail item.
+  gift-chance: 65
+  # Item dropped when player is unlucky.
+  fail-item: COAL
+  fail-amount: 1
+
 #Add here all nicknames of players which head you can use as one of the gift skin
  presents:
   - CruXXx
   - SeerPotion
-# Alternative looking
-# - MHF_Present1
-# - MHF_Present2
+  - MHF_Present1
+  - MHF_Present2
  gifts:
   - DIAMOND
   - EMERALD
@@ -49,6 +56,9 @@ xmas:
   - SPONGE
   - DIAMOND_HOE
   - NAME_TAG
+  - NETHERITE_SCRAP:2
+  - AMETHYST_SHARD:6
+  - HONEY_BOTTLE:3
 
  tree-lvl:
   sapling:
@@ -56,23 +66,29 @@ xmas:
    gift-cooldown: -1
    #Resources to up level tree to next.
    lvlup:
-    DIAMOND: 1
-    REDSTONE: 10
-    ENDER_PEARL: 1
+    COPPER_INGOT: 16
+    NETHER_WART: 12
+    AMETHYST_SHARD: 8
   small_tree:
-   gift-cooldown: 300
+   gift-cooldown: 280
    lvlup:
-    DIAMOND: 3
-    GOLD_INGOT: 5
-    BLAZE_POWDER: 10
-    SNOWBALL: 30
+    GOLD_INGOT: 6
+    BLAZE_POWDER: 12
+    CRYING_OBSIDIAN: 4
+    HONEY_BLOCK: 4
   tree:
    gift-cooldown: 180
    lvlup:
-    DIAMOND: 5
-    EMERALD: 3
-    GOLD_NUGGET: 8
-    GLOWSTONE_DUST: 16
+    DIAMOND: 6
+    EMERALD: 6
+    NETHERITE_SCRAP: 3
+    GHAST_TEAR: 4
+    PRISMARINE_CRYSTALS: 12
   magic_tree:
-   gift-cooldown: 120
+   gift-cooldown: 110
    lvlup:
+    NETHERITE_INGOT: 2
+    ECHO_SHARD: 6
+    NETHER_STAR: 1
+    SCULK: 24
+    CRIMSON_STEM: 16

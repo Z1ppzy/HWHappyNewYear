@@ -1,4 +1,4 @@
-#_UNUSED is a keyword to disable message.
+﻿#_UNUSED is a keyword to disable message.
 
 #For chat
 plugin-name: X-Mas
@@ -22,6 +22,7 @@ messages:
   destroy-tut: To destroy your tree cut it again.
   destroy-fail-owner: It's not your tree!
   destroy-complete: You're MONSTER!
+  destroy-removed: You carried the Christmas tree out to the trash.
  gift:
   luck-message: _UNUSED
   unluck-message: Probably Santa has put you in blacklist. I hope you're lucky next time!
@@ -45,3 +46,4 @@ command:
  player-offline: '&cPlayer not found'
  no-player-name: '&6Missing player name'
  giveaway: '&cHo! &2Ho! &cHo! &3Looks like its time to check presents!'
+

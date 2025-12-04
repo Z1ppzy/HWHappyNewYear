@@ -6,7 +6,7 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ParticleContainer {
 
@@ -18,7 +18,6 @@ public class ParticleContainer {
             new DustOptions(Color.BLUE, 1f),
             new DustOptions(Color.FUCHSIA, 1f)
     };
-    final static Random random = new Random("Happy 2020!".hashCode());
 
     private final Particle type;
     private final float offsetX;
@@ -37,19 +36,38 @@ public class ParticleContainer {
     }
 
     public void playEffect(Location location) {
-        location = location.clone(); // prevent chaning pos of object
-        location.add(0.5, 0.5, 0.5); // A small fix
-        for (Player player : location.getWorld().getPlayers())
-            if (player.getLocation().distance(location) < 16) {
-                try {
-                    if (type == Particle.REDSTONE) {
-                        player.spawnParticle(type, location, count, offsetX, offsetY, offsetZ, speed, COLORS[random.nextInt(6)]);
-                    } else {
-                        player.spawnParticle(type, location, count, offsetX, offsetY, offsetZ, speed);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        if (location == null || location.getWorld() == null) {
+            return;
+        }
+
+        // Проверяем загрузку чанка
+        int chunkX = location.getBlockX() >> 4;
+        int chunkZ = location.getBlockZ() >> 4;
+        if (!location.getWorld().isChunkLoaded(chunkX, chunkZ)) {
+            return;
+        }
+
+        location = location.clone();
+        location.add(0.5, 0.5, 0.5);
+
+        // ИСПРАВЛЕНО: getPlayers() вместо getNearbyEntities() для async
+        // Проверяем расстояние вручную
+        for (Player player : location.getWorld().getPlayers()) {
+            // 256 = 16*16 (квадрат расстояния)
+            if (player.getLocation().distanceSquared(location) > 256) {
+                continue;
             }
+
+            try {
+                if (type == Particle.DUST) {
+                    int colorIndex = ThreadLocalRandom.current().nextInt(COLORS.length);
+                    player.spawnParticle(type, location, count, offsetX, offsetY, offsetZ, speed, COLORS[colorIndex]);
+                } else {
+                    player.spawnParticle(type, location, count, offsetX, offsetY, offsetZ, speed);
+                }
+            } catch (Exception e) {
+                // Игнорируем ошибки
+            }
+        }
     }
 }
